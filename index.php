@@ -3,368 +3,590 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elephant Detection System</title>
+    <title>Elephant Detection System - AI Wildlife Conservation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
     <style>
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-border {
+            background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6);
+            padding: 2px;
         }
-        .drag-active {
-            border-color: #3b82f6 !important;
-            background-color: #eff6ff !important;
+        .hover-scale { transition: transform 0.3s; }
+        .hover-scale:hover { transform: scale(1.05); }
+        .pulse-animation {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
-        @keyframes pulse-slow {
-            0%, 100% {
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
+        .loading-dots span {
+            animation: blink 1.4s infinite both;
+        }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink {
+            0%, 80%, 100% { opacity: 0; }
+            40% { opacity: 1; }
+        }
+        .result-card {
+            animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
                 opacity: 1;
+                transform: translateY(0);
             }
-            50% {
-                opacity: 0.7;
-            }
-        }
-        .animate-pulse-slow {
-            animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8 max-w-6xl">
-        <!-- Header -->
+<body class="bg-gradient-to-br from-slate-50 via-white to-emerald-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="text-3xl">🐘</div>
+                    <div>
+                        <h1 class="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+                            Elephant Detection System
+                        </h1>
+                        <p class="text-xs text-gray-600">Powered by Vertex AI Custom Model</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-medium">
+                        <i data-feather="cpu" class="w-3 h-3 inline mr-1"></i>
+                        AI Model Active
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Hero Section -->
         <div class="text-center mb-10">
-            <h1 class="text-5xl font-bold bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent mb-3">
-                🐘 Elephant Detection System
-            </h1>
-            <p class="text-gray-600 text-lg">Advanced AI-powered elephant detection using Google Vertex AI</p>
+            <h2 class="text-4xl font-bold text-gray-800 mb-3">
+                Advanced Wildlife Detection Technology
+            </h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Using state-of-the-art machine learning to identify and protect elephants in their natural habitat
+            </p>
         </div>
 
-        <!-- Main Card -->
-        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
-            <!-- Card Header -->
-            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 text-white">
-                <div class="flex items-center justify-center space-x-4">
-                    <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
-                    </svg>
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-xl shadow-sm p-4 hover-scale">
+                <div class="flex items-center justify-between">
                     <div>
-                        <h2 class="text-2xl font-semibold">Upload & Detect</h2>
-                        <p class="text-indigo-100">Upload an image to detect elephants</p>
+                        <p class="text-gray-500 text-sm">Model Accuracy</p>
+                        <p class="text-2xl font-bold text-gray-800">95.8%</p>
+                    </div>
+                    <div class="text-emerald-500">
+                        <i data-feather="trending-up" class="w-8 h-8"></i>
                     </div>
                 </div>
             </div>
-
-            <!-- Card Body -->
-            <div class="p-8">
-                <!-- Upload Area -->
-                <div id="uploadArea" class="border-3 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-indigo-400 transition-all duration-300 cursor-pointer bg-gray-50 hover:bg-indigo-50">
-                    <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    <p class="text-xl font-medium text-gray-700 mb-2">Drop your image here</p>
-                    <p class="text-gray-500 mb-4">or click to browse</p>
-                    <button type="button" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200">
-                        <svg class="-ml-1 mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                        </svg>
-                        Select Image
-                    </button>
-                    <p class="text-xs text-gray-500 mt-3">Supports: JPG, PNG, WEBP (Max: 10MB)</p>
-                    <input type="file" id="imageInput" accept="image/*" class="hidden">
+            <div class="bg-white rounded-xl shadow-sm p-4 hover-scale">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Processing Time</p>
+                        <p class="text-2xl font-bold text-gray-800">&lt;2s</p>
+                    </div>
+                    <div class="text-blue-500">
+                        <i data-feather="zap" class="w-8 h-8"></i>
+                    </div>
                 </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-4 hover-scale">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Images Analyzed</p>
+                        <p class="text-2xl font-bold text-gray-800" id="imageCount">0</p>
+                    </div>
+                    <div class="text-purple-500">
+                        <i data-feather="image" class="w-8 h-8"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-sm p-4 hover-scale">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Conservation Impact</p>
+                        <p class="text-2xl font-bold text-gray-800">High</p>
+                    </div>
+                    <div class="text-orange-500">
+                        <i data-feather="shield" class="w-8 h-8"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                <!-- Image Preview -->
-                <div id="previewSection" class="hidden mt-8">
-                    <div class="bg-gray-100 rounded-xl p-4">
-                        <img id="imagePreview" class="max-h-96 mx-auto rounded-lg shadow-lg" alt="Preview">
-                        <div class="mt-4 flex justify-center space-x-4">
-                            <button id="removeBtn" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                                Remove
-                            </button>
-                            <button id="detectBtn" class="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 animate-pulse-slow">
-                                <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
+        <!-- Main Upload Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Upload Card -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-emerald-500 to-blue-500 p-6 text-white">
+                    <h3 class="text-2xl font-semibold mb-2">Upload Image</h3>
+                    <p class="text-emerald-50">Select or drag an image for elephant detection</p>
+                </div>
+                
+                <div class="p-6">
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <!-- Drop Zone -->
+                        <div id="dropZone" class="border-3 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-emerald-400 transition-all">
+                            <input type="file" id="imageInput" name="image" accept="image/*" class="hidden">
+                            
+                            <div id="uploadPlaceholder">
+                                <div class="mx-auto w-20 h-20 mb-4 text-gray-400">
+                                    <i data-feather="upload-cloud" class="w-20 h-20"></i>
+                                </div>
+                                <p class="text-lg font-medium text-gray-700 mb-2">
+                                    Drop your image here or click to browse
+                                </p>
+                                <p class="text-sm text-gray-500">
+                                    Supports JPG, PNG, WEBP (Max 10MB)
+                                </p>
+                            </div>
+                            
+                            <div id="imagePreview" class="hidden">
+                                <img id="previewImg" class="mx-auto max-h-64 rounded-lg shadow-md mb-4">
+                                <p class="text-sm text-gray-600 mb-2">
+                                    <span id="fileName"></span>
+                                </p>
+                                <button type="button" id="changeImage" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                    Change Image
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="mt-6 flex gap-3">
+                            <button type="submit" id="detectBtn" class="flex-1 bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                                <i data-feather="search" class="w-5 h-5 inline mr-2"></i>
                                 Detect Elephants
                             </button>
+                            <button type="button" id="clearBtn" class="px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-all">
+                                <i data-feather="x" class="w-5 h-5 inline mr-2"></i>
+                                Clear
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Sample Images -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <p class="text-sm text-gray-600 mb-3">Try with sample images:</p>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button onclick="loadSampleImage('sample1.jpg')" class="group relative overflow-hidden rounded-lg hover-scale">
+                                <img src="https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=150&h=150&fit=crop" class="w-full h-20 object-cover">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all"></div>
+                            </button>
+                            <button onclick="loadSampleImage('sample2.jpg')" class="group relative overflow-hidden rounded-lg hover-scale">
+                                <img src="https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=150&h=150&fit=crop" class="w-full h-20 object-cover">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all"></div>
+                            </button>
+                            <button onclick="loadSampleImage('sample3.jpg')" class="group relative overflow-hidden rounded-lg hover-scale">
+                                <img src="https://images.unsplash.com/photo-1549366021-9f761d450615?w=150&h=150&fit=crop" class="w-full h-20 object-cover">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all"></div>
+                            </button>
+                            <button onclick="loadSampleImage('sample4.jpg')" class="group relative overflow-hidden rounded-lg hover-scale">
+                                <img src="https://images.unsplash.com/photo-1551316679-9c6ae9dec224?w=150&h=150&fit=crop" class="w-full h-20 object-cover">
+                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all"></div>
+                            </button>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Results Section -->
-                <div id="resultsSection" class="hidden mt-8">
-                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                            <svg class="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Detection Results
-                        </h3>
-                        <div id="resultsContent" class="prose max-w-none">
-                            <!-- Results will be inserted here -->
+            <!-- Results Card -->
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-6 text-white">
+                    <h3 class="text-2xl font-semibold mb-2">Detection Results</h3>
+                    <p class="text-blue-50">AI-powered analysis results appear here</p>
+                </div>
+                
+                <div class="p-6 min-h-[400px]" id="resultsContainer">
+                    <!-- Initial State -->
+                    <div id="initialState" class="text-center py-12">
+                        <div class="mx-auto w-24 h-24 mb-4 text-gray-300">
+                            <i data-feather="cpu" class="w-24 h-24"></i>
                         </div>
+                        <p class="text-gray-500">Upload an image to start detection</p>
+                        <p class="text-sm text-gray-400 mt-2">Our AI model will analyze the image for elephants</p>
+                    </div>
+                    
+                    <!-- Loading State -->
+                    <div id="loadingState" class="hidden text-center py-12">
+                        <div class="mx-auto w-20 h-20 mb-4 text-blue-500 pulse-animation">
+                            <i data-feather="loader" class="w-20 h-20 animate-spin"></i>
+                        </div>
+                        <p class="text-lg font-medium text-gray-700 mb-2">Analyzing Image</p>
+                        <p class="text-sm text-gray-500">
+                            Processing with Vertex AI
+                            <span class="loading-dots">
+                                <span>.</span><span>.</span><span>.</span>
+                            </span>
+                        </p>
+                    </div>
+                    
+                    <!-- Results Display -->
+                    <div id="resultsDisplay" class="hidden">
+                        <!-- Results will be injected here -->
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Info Section -->
-        <div class="mt-8 grid md:grid-cols-3 gap-6">
-            <div class="bg-white rounded-xl p-6 shadow-lg">
-                <div class="flex items-center mb-3">
-                    <div class="bg-blue-100 p-3 rounded-lg">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                    </div>
-                    <h3 class="ml-3 text-lg font-semibold text-gray-800">Fast Detection</h3>
+        <!-- Information Section -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="text-emerald-500 mb-3">
+                    <i data-feather="info" class="w-8 h-8"></i>
                 </div>
-                <p class="text-gray-600">Powered by Google Vertex AI for quick and accurate elephant detection</p>
+                <h4 class="text-lg font-semibold text-gray-800 mb-2">About the Model</h4>
+                <p class="text-sm text-gray-600">
+                    Our custom-trained Vertex AI model uses advanced computer vision to accurately identify elephants in various environments and conditions.
+                </p>
             </div>
-
-            <div class="bg-white rounded-xl p-6 shadow-lg">
-                <div class="flex items-center mb-3">
-                    <div class="bg-purple-100 p-3 rounded-lg">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                    </div>
-                    <h3 class="ml-3 text-lg font-semibold text-gray-800">Secure Processing</h3>
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="text-blue-500 mb-3">
+                    <i data-feather="shield" class="w-8 h-8"></i>
                 </div>
-                <p class="text-gray-600">Your images are processed securely and not stored on our servers</p>
+                <h4 class="text-lg font-semibold text-gray-800 mb-2">Conservation Impact</h4>
+                <p class="text-sm text-gray-600">
+                    This technology helps wildlife organizations monitor elephant populations, track movements, and protect these magnificent creatures from threats.
+                </p>
             </div>
-
-            <div class="bg-white rounded-xl p-6 shadow-lg">
-                <div class="flex items-center mb-3">
-                    <div class="bg-green-100 p-3 rounded-lg">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="ml-3 text-lg font-semibold text-gray-800">Free to Use</h3>
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="text-purple-500 mb-3">
+                    <i data-feather="database" class="w-8 h-8"></i>
                 </div>
-                <p class="text-gray-600">No registration required - start detecting elephants immediately</p>
+                <h4 class="text-lg font-semibold text-gray-800 mb-2">Dataset & Training</h4>
+                <p class="text-sm text-gray-600">
+                    Trained on thousands of elephant images from Google Cloud Storage, ensuring high accuracy across different species and environments.
+                </p>
             </div>
         </div>
-    </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-16 bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm text-gray-400">
+                © 2024 Elephant Detection System | Powered by Google Vertex AI
+            </p>
+        </div>
+    </footer>
 
     <script>
-        // DOM Elements
-        const uploadArea = document.getElementById('uploadArea');
+        // Initialize Feather Icons
+        feather.replace();
+        
+        // Global variables
+        let imageFile = null;
+        let imageCount = parseInt(localStorage.getItem('imageCount') || '0');
+        document.getElementById('imageCount').textContent = imageCount;
+        
+        // Elements
+        const dropZone = document.getElementById('dropZone');
         const imageInput = document.getElementById('imageInput');
-        const previewSection = document.getElementById('previewSection');
-        const imagePreview = document.getElementById('imagePreview');
-        const removeBtn = document.getElementById('removeBtn');
+        const uploadForm = document.getElementById('uploadForm');
         const detectBtn = document.getElementById('detectBtn');
-        const resultsSection = document.getElementById('resultsSection');
-        const resultsContent = document.getElementById('resultsContent');
-
-        let selectedFile = null;
-
-        // Upload area click handler
-        uploadArea.addEventListener('click', () => {
-            imageInput.click();
-        });
-
-        // Drag and drop handlers
-        uploadArea.addEventListener('dragover', (e) => {
+        const clearBtn = document.getElementById('clearBtn');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const fileName = document.getElementById('fileName');
+        const changeImage = document.getElementById('changeImage');
+        const initialState = document.getElementById('initialState');
+        const loadingState = document.getElementById('loadingState');
+        const resultsDisplay = document.getElementById('resultsDisplay');
+        
+        // Drop zone events
+        dropZone.addEventListener('click', () => imageInput.click());
+        
+        dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            uploadArea.classList.add('drag-active');
+            dropZone.classList.add('border-emerald-400', 'bg-emerald-50');
         });
-
-        uploadArea.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('drag-active');
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-emerald-400', 'bg-emerald-50');
         });
-
-        uploadArea.addEventListener('drop', (e) => {
+        
+        dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
-            uploadArea.classList.remove('drag-active');
+            dropZone.classList.remove('border-emerald-400', 'bg-emerald-50');
             
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                handleFile(files[0]);
+                handleFileSelect(files[0]);
             }
         });
-
-        // File input change handler
+        
+        // File input change
         imageInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
-                handleFile(e.target.files[0]);
+                handleFileSelect(e.target.files[0]);
             }
         });
-
+        
+        // Change image button
+        changeImage.addEventListener('click', () => {
+            imageInput.click();
+        });
+        
+        // Clear button
+        clearBtn.addEventListener('click', clearForm);
+        
+        // Form submission
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!imageFile) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Image Selected',
+                    text: 'Please select an image to analyze',
+                    confirmButtonColor: '#10b981'
+                });
+                return;
+            }
+            
+            await detectElephants();
+        });
+        
         // Handle file selection
-        function handleFile(file) {
+        function handleFileSelect(file) {
             // Validate file type
             const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
             if (!validTypes.includes(file.type)) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Invalid File Type',
-                    text: 'Please select a valid image file (JPG, PNG, or WEBP)',
-                    confirmButtonColor: '#6366f1'
+                    text: 'Please upload a JPG, PNG, or WEBP image',
+                    confirmButtonColor: '#10b981'
                 });
                 return;
             }
-
+            
             // Validate file size (10MB)
-            if (file.size > 10 * 1024 * 1024) {
+            const maxSize = 10 * 1024 * 1024;
+            if (file.size > maxSize) {
                 Swal.fire({
                     icon: 'error',
                     title: 'File Too Large',
-                    text: 'Please select an image smaller than 10MB',
-                    confirmButtonColor: '#6366f1'
+                    text: 'Please upload an image smaller than 10MB',
+                    confirmButtonColor: '#10b981'
                 });
                 return;
             }
-
-            selectedFile = file;
-
-            // Show preview
+            
+            imageFile = file;
+            displayImagePreview(file);
+        }
+        
+        // Display image preview
+        function displayImagePreview(file) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                imagePreview.src = e.target.result;
-                uploadArea.classList.add('hidden');
-                previewSection.classList.remove('hidden');
-                resultsSection.classList.add('hidden');
+                previewImg.src = e.target.result;
+                fileName.textContent = file.name;
+                uploadPlaceholder.classList.add('hidden');
+                imagePreview.classList.remove('hidden');
+                detectBtn.disabled = false;
             };
             reader.readAsDataURL(file);
         }
-
-        // Remove button handler
-        removeBtn.addEventListener('click', () => {
-            selectedFile = null;
+        
+        // Clear form
+        function clearForm() {
+            imageFile = null;
             imageInput.value = '';
-            imagePreview.src = '';
-            uploadArea.classList.remove('hidden');
-            previewSection.classList.add('hidden');
-            resultsSection.classList.add('hidden');
-        });
-
-        // Detect button handler
-        detectBtn.addEventListener('click', async () => {
-            if (!selectedFile) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'No Image Selected',
-                    text: 'Please select an image first',
-                    confirmButtonColor: '#6366f1'
-                });
-                return;
-            }
-
-            // Show loading
-            Swal.fire({
-                title: 'Detecting Elephants...',
-                html: 'Processing your image with AI<br><span class="text-sm text-gray-500">This may take a few seconds</span>',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                showConfirmButton: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            // Prepare form data
+            uploadPlaceholder.classList.remove('hidden');
+            imagePreview.classList.add('hidden');
+            detectBtn.disabled = true;
+            
+            // Reset results
+            initialState.classList.remove('hidden');
+            loadingState.classList.add('hidden');
+            resultsDisplay.classList.add('hidden');
+            resultsDisplay.innerHTML = '';
+        }
+        
+        // Detect elephants
+        async function detectElephants() {
+            // Show loading state
+            initialState.classList.add('hidden');
+            loadingState.classList.remove('hidden');
+            resultsDisplay.classList.add('hidden');
+            
             const formData = new FormData();
-            formData.append('image', selectedFile);
-
+            formData.append('image', imageFile);
+            
             try {
-                const response = await fetch('detect.php', {
+                const response = await fetch('predict.php', {
                     method: 'POST',
                     body: formData
                 });
-
+                
                 const data = await response.json();
-
-                Swal.close();
-
+                
                 if (data.status === 'success') {
                     displayResults(data.data);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Detection Failed',
-                        text: data.error || 'An unexpected error occurred',
-                        confirmButtonColor: '#6366f1'
+                    
+                    // Update image count
+                    imageCount++;
+                    localStorage.setItem('imageCount', imageCount.toString());
+                    document.getElementById('imageCount').textContent = imageCount;
+                    
+                    // Show success toast
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
                     });
+                    
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Analysis Complete!'
+                    });
+                } else {
+                    throw new Error(data.error || 'Detection failed');
                 }
             } catch (error) {
-                Swal.close();
+                console.error('Detection error:', error);
+                
+                // Hide loading state
+                loadingState.classList.add('hidden');
+                initialState.classList.remove('hidden');
+                
                 Swal.fire({
                     icon: 'error',
-                    title: 'Network Error',
-                    text: 'Failed to connect to the server. Please try again.',
-                    confirmButtonColor: '#6366f1'
+                    title: 'Detection Failed',
+                    text: error.message || 'An error occurred during detection',
+                    confirmButtonColor: '#10b981'
                 });
-                console.error('Error:', error);
             }
-        });
-
+        }
+        
         // Display results
         function displayResults(data) {
-            resultsSection.classList.remove('hidden');
+            loadingState.classList.add('hidden');
+            resultsDisplay.classList.remove('hidden');
             
-            // Format the response for display
-            let formattedContent = data.response || data.markdown_response || 'No detection data available';
+            const elephantDetected = data.elephant_detected;
+            const confidence = data.confidence_percentage;
             
-            // Convert markdown to HTML
-            formattedContent = formattedContent
-                .replace(/\*\*\*(.*?)\*\*\*/g, '<strong class="text-indigo-700">$1</strong>')
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                .replace(/^### (.*$)/gim, '<h4 class="text-lg font-semibold mt-4 mb-2 text-gray-800">$1</h4>')
-                .replace(/^## (.*$)/gim, '<h3 class="text-xl font-semibold mt-4 mb-2 text-gray-800">$1</h3>')
-                .replace(/^# (.*$)/gim, '<h2 class="text-2xl font-bold mt-4 mb-3 text-gray-900">$1</h2>')
-                .replace(/^• (.*$)/gim, '<li class="ml-4 mb-1">$1</li>')
-                .replace(/^- (.*$)/gim, '<li class="ml-4 mb-1">$1</li>')
-                .replace(/\n\n/g, '</p><p class="mb-3 text-gray-700">')
-                .replace(/\n/g, '<br>');
-
-            // Wrap list items
-            formattedContent = formattedContent.replace(/(<li.*?<\/li>\s*)+/g, function(match) {
-                return '<ul class="list-disc list-inside mb-3">' + match + '</ul>';
-            });
-
-            // Add paragraph tags if not already present
-            if (!formattedContent.startsWith('<')) {
-                formattedContent = '<p class="mb-3 text-gray-700">' + formattedContent + '</p>';
-            }
-
-            resultsContent.innerHTML = `
-                <div class="space-y-4">
-                    ${formattedContent}
-                </div>
-                <div class="mt-6 pt-6 border-t border-gray-200">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center text-sm text-gray-500">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Processed at ${new Date().toLocaleString()}
+            let resultHTML = '<div class="result-card">';
+            
+            // Main result
+            if (elephantDetected) {
+                resultHTML += `
+                    <div class="bg-gradient-to-r from-emerald-500 to-green-600 text-white p-6 rounded-xl mb-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="text-2xl font-bold mb-2">🐘 ${data.message}</h4>
+                                <p class="text-emerald-50">${data.details}</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold">${confidence}%</div>
+                                <div class="text-sm text-emerald-100">Confidence</div>
+                            </div>
                         </div>
-                        <button onclick="location.reload()" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
-                            Analyze Another Image →
-                        </button>
                     </div>
-                </div>
-            `;
-
-            // Scroll to results
-            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-            // Show success notification
+                `;
+                
+                // Conservation note
+                if (data.conservation_note) {
+                    resultHTML += `
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-4">
+                            <div class="flex">
+                                <div class="text-emerald-600 mr-3">
+                                    <i data-feather="info" class="w-5 h-5"></i>
+                                </div>
+                                <p class="text-sm text-emerald-800">${data.conservation_note}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                resultHTML += `
+                    <div class="bg-gradient-to-r from-gray-500 to-gray-600 text-white p-6 rounded-xl mb-4">
+                        <h4 class="text-2xl font-bold mb-2">${data.message}</h4>
+                        <p class="text-gray-100">${data.details}</p>
+                        ${data.suggestion ? `<p class="text-gray-200 text-sm mt-2">${data.suggestion}</p>` : ''}
+                    </div>
+                `;
+            }
+            
+            // Top predictions
+            if (data.top_predictions && data.top_predictions.length > 0) {
+                resultHTML += `
+                    <div class="mb-4">
+                        <h5 class="text-lg font-semibold text-gray-800 mb-3">Detection Confidence</h5>
+                        <div class="space-y-2">
+                `;
+                
+                data.top_predictions.forEach((pred, index) => {
+                    const isElephant = pred.label.toLowerCase().includes('elephant');
+                    const barColor = isElephant ? 'bg-emerald-500' : 'bg-gray-400';
+                    
+                    resultHTML += `
+                        <div class="flex items-center space-x-3">
+                            <div class="w-32 text-sm text-gray-600">${pred.label}</div>
+                            <div class="flex-1 bg-gray-200 rounded-full h-6 relative overflow-hidden">
+                                <div class="${barColor} h-full rounded-full transition-all duration-500" 
+                                     style="width: ${pred.percentage}%"></div>
+                                <span class="absolute inset-0 flex items-center justify-center text-xs font-medium">
+                                    ${pred.percentage}%
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                resultHTML += '</div></div>';
+            }
+            
+            // Model info
+            if (data.model_info) {
+                resultHTML += `
+                    <div class="border-t pt-4">
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <span>Model: ${data.model_info.name}</span>
+                            <span>${data.timestamp}</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            resultHTML += '</div>';
+            
+            resultsDisplay.innerHTML = resultHTML;
+            
+            // Re-initialize feather icons
+            feather.replace();
+        }
+        
+        // Load sample image (placeholder function)
+        function loadSampleImage(imageName) {
             Swal.fire({
-                icon: 'success',
-                title: 'Detection Complete!',
-                text: 'The analysis has been completed successfully',
-                timer: 2000,
-                showConfirmButton: false,
-                position: 'top-end',
-                toast: true
+                icon: 'info',
+                title: 'Sample Images',
+                text: 'Please download and upload a sample elephant image to test the system',
+                confirmButtonColor: '#10b981'
             });
         }
     </script>

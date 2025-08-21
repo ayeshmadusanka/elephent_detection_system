@@ -103,7 +103,7 @@ echo "GOOGLE_APPLICATION_CREDENTIALS=your-service-account-key.json" > .env
 
 ```bash
 # Start web server (example with PHP built-in server)
-php -S localhost:8000 app.php
+php -S localhost:8000
 
 # Or configure with Apache/Nginx
 # Point document root to the project directory
